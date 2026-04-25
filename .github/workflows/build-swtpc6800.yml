@@ -17,7 +17,7 @@ jobs:
       - name: Install build dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends build-essential make git ca-certificates
+          sudo apt-get install -y --no-install-recommends build-essential make git ca-certificates libpcre3-dev libedit-dev libpng-dev
 
       - name: Build SIMH SWTPC 6800 simulator
         run: bash scripts/setup-swtpc-sim.sh

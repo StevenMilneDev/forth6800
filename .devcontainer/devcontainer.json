@@ -11,7 +11,7 @@
       ]
     }
   },
-  "updateContentCommand": "sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential make git ca-certificates",
+  "updateContentCommand": "sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential make git ca-certificates libpcre3-dev libedit-dev libpng-dev",
   "postCreateCommand": "bash scripts/setup-swtpc-sim.sh",
   "remoteEnv": {
     "PATH": "/workspaces/forth6800/.tools/bin:${containerEnv:PATH}"

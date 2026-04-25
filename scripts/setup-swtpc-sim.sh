@@ -20,7 +20,8 @@ fi
 cd "$SIMH_DIR"
 
 echo "[setup] Building SWTPC 6800 simulator target (swtp6800)"
-make -j"$(nproc)" swtp6800
+# Keep CI/Codespaces builds non-interactive and aligned with SIMH guidance.
+make -j"$(nproc)" swtp6800 BUILD_SEPARATE=1 QUIET=1
 
 if [ ! -x "$SIMH_DIR/BIN/swtp6800" ]; then
   echo "[setup] ERROR: expected binary not found at $SIMH_DIR/BIN/swtp6800" >&2

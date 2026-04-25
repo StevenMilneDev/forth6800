@@ -22,9 +22,9 @@ This repo now includes a preconfigured Codespaces environment that downloads and
 
 ### What happens automatically
 
-- `.devcontainer/devcontainer.json` installs build prerequisites.
+- `.devcontainer/devcontainer.json` installs build prerequisites (including `libpcre3-dev`, `libedit-dev`, `libpng-dev` for non-interactive SIMH builds).
 - `scripts/setup-swtpc-sim.sh` clones SIMH into `.tools/simh` (if not present).
-- The script builds the `swtp6800` target and exposes it at `.tools/bin/swtp6800`.
+- The script builds the `swtp6800` target (`BUILD_SEPARATE=1 QUIET=1`) and exposes it at `.tools/bin/swtp6800`.
 - PATH in the container is updated so `swtp6800` is directly runnable.
 
 ### Run manually (inside Codespaces)
