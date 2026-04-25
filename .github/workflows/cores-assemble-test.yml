@@ -1,0 +1,58 @@
+name: CORES assemble smoke test
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+
+jobs:
+  cores-assemble:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends build-essential make git ca-certificates libpcre3-dev libedit-dev libpng-dev expect
+
+      - name: Build SWTPC 6800 simulator
+        run: bash scripts/setup-swtpc-sim.sh
+
+      - name: Build CORES binary from repository S19
+        run: |
+          test -s third_party/cores/swtpc_cores_1_01.s19
+          python3 scripts/s19_to_bin.py \
+            third_party/cores/swtpc_cores_1_01.s19 \
+            third_party/cores/swtpc_cores_1_01.bin
+          test -s third_party/cores/swtpc_cores_1_01.bin
+
+      - name: Boot CORES and attempt assembly load
+        run: |
+          cat > /tmp/run_cores.expect <<'EXPECT'
+          #!/usr/bin/expect -f
+          set timeout 20
+          spawn .tools/bin/swtp6800
+          expect "sim>"
+          send "load third_party/cores/swtpc_cores_1_01.s19\r"
+          expect "sim>"
+          send "dep pc 1F00\r"
+          expect "sim>"
+          send "go\r"
+          expect {
+            -re "ASSEMBLER|EDITOR|PASS|ERROR" { }
+            timeout { puts "Timed out waiting for CORES prompt"; exit 1 }
+          }
+
+          # Attempt to feed the project source filename to CORES assembler/editor.
+          send "f83_6800.asm\r"
+          send "\x05"
+          expect "sim>"
+          send "quit\r"
+          expect eof
+          EXPECT
+          chmod +x /tmp/run_cores.expect
+          /tmp/run_cores.expect
