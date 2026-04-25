@@ -1,0 +1,35 @@
+name: Build SWTPC 6800 simulator
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+
+jobs:
+  build-swtp6800:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends build-essential make git ca-certificates
+
+      - name: Build SIMH SWTPC 6800 simulator
+        run: bash scripts/setup-swtpc-sim.sh
+
+      - name: Verify simulator binary
+        run: |
+          test -x .tools/bin/swtp6800
+          .tools/bin/swtp6800 -V
+
+      - name: Upload simulator artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: swtp6800
+          path: .tools/bin/swtp6800
+          if-no-files-found: error
