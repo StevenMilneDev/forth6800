@@ -1,10 +1,10 @@
 name: CORES assemble smoke test
 
 on:
+  pull_request:
   push:
     branches:
-      - '**'
-  pull_request:
+      - main
 
 jobs:
   cores-assemble:
