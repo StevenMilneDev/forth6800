@@ -24,7 +24,7 @@ This repo now includes a preconfigured Codespaces environment that downloads and
 
 - `.devcontainer/devcontainer.json` installs build prerequisites (including `libpcre3-dev`, `libedit-dev`, `libpng-dev` for non-interactive SIMH builds).
 - `scripts/setup-swtpc-sim.sh` clones SIMH into `.tools/simh` (if not present).
-- The script builds the `swtp6800` target (`BUILD_SEPARATE=1 QUIET=1`) and exposes it at `.tools/bin/swtp6800`.
+- The script builds the SIMH SWTPC target (defaults to `swtp6800mp-a`, configurable via `SIMH_TARGET`) and exposes the resulting binary at `.tools/bin/swtp6800`.
 - PATH in the container is updated so `swtp6800` is directly runnable.
 
 ### Run manually (inside Codespaces)
@@ -37,7 +37,7 @@ swtp6800 -V
 
 ## CI build for simulator
 
-A GitHub Actions workflow at `.github/workflows/build-swtpc6800.yml` now downloads and compiles SIMH `swtp6800` on every push and pull request, then uploads the built binary as a workflow artifact.
+A GitHub Actions workflow at `.github/workflows/build-swtpc6800.yml` now downloads and compiles the SIMH SWTPC simulator on every push and pull request, then uploads the built binary as a workflow artifact.
 
 ## Target
 
