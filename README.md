@@ -55,10 +55,6 @@ A GitHub Actions workflow at `.github/workflows/build-swtpc6800.yml` now downloa
 A second CI workflow (`.github/workflows/cores-assemble-test.yml`) now:
 
 1. builds the SIMH SWTPC 6800 simulator,
-2. downloads SWTPC CORES (co-resident assembler/editor),
-3. converts the S19 image into a contiguous binary image (`third_party/cores/swtpc_cores_1_01.bin`), and
-4. boots CORES in the simulator and attempts to feed `f83_6800.asm` to the running session.
-
-The CORES source image is fetched from:
-
-- <https://gist.github.com/bzotto/88b5b1820a8febb1c64b4e24adda1236>
+2. uses the checked-in SWTPC CORES S19 (`third_party/cores/swtpc_cores_1_01.s19`),
+3. converts it into a contiguous binary image (`third_party/cores/swtpc_cores_1_01.bin`), and
+4. boots CORES in the simulator as a smoke test and verifies the emulator can run and return to the SIMH prompt.
