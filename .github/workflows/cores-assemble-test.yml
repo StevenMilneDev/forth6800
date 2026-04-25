@@ -42,8 +42,10 @@ jobs:
           send "dep pc 1F00\r"
           expect "sim>"
           send "go\r"
+          # Prompt CORES to emit a command prompt if it is waiting on input.
+          send "\r"
           expect {
-            -re "ASSEMBLER|EDITOR|PASS|ERROR" { }
+            -re "READY|WHAT\?|PASS|ASSEMBLER|EDITOR" { }
             timeout { puts "Timed out waiting for CORES prompt"; exit 1 }
           }
 
