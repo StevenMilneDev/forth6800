@@ -49,3 +49,20 @@ A GitHub Actions workflow at `.github/workflows/build-swtpc6800.yml` now downloa
 - ROM I/O entry points are currently set to `MON_INCH = $E1AC` and `MON_OUTCH = $E1D1` (common SWTBUG defaults).
 - Memory map constants near the top of `f83_6800.asm` should be adjusted for your specific machine/SIMH configuration.
 - This is a bootstrap-grade F83-like kernel rather than a complete, production F83 environment.
+
+## CORES assembler smoke test in CI
+
+A second CI workflow (`.github/workflows/cores-assemble-test.yml`) now:
+
+1. builds the SIMH SWTPC 6800 simulator,
+2. uses the checked-in SWTPC CORES S19 (`third_party/cores/swtpc_cores_1_01.s19`),
+3. runs `simh/cores.ini` to load CORES and set `PC` for execution, and
+4. verifies the simulator returns to `sim>` after running the script in CI.
+
+### Manual CORES load in Codespaces
+
+```bash
+swtp6800 simh/cores.ini
+# at sim>
+go
+```

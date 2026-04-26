@@ -1,0 +1,44 @@
+name: CORES boot smoke test
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  cores-boot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends build-essential make git ca-certificates libpcre3-dev libedit-dev libpng-dev expect
+
+      - name: Build SWTPC 6800 simulator
+        run: bash scripts/setup-swtpc-sim.sh
+
+      - name: Verify CORES S19 exists
+        run: test -s third_party/cores/swtpc_cores_1_01.s19
+
+      - name: Boot CORES smoke test
+        run: |
+          cat > /tmp/run_cores.expect <<'EXPECT'
+          #!/usr/bin/expect -f
+          set timeout 20
+          spawn .tools/bin/swtp6800
+          expect "sim>"
+          send "do simh/cores.ini\r"
+          expect {
+            -re "sim>" { }
+            timeout { puts "Timed out waiting to return to sim>"; exit 1 }
+          }
+          send "quit\r"
+          expect eof
+          EXPECT
+          chmod +x /tmp/run_cores.expect
+          /tmp/run_cores.expect
