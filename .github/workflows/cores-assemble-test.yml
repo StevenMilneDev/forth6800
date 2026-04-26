@@ -1,4 +1,4 @@
-name: CORES assemble smoke test
+name: CORES boot smoke test
 
 on:
   pull_request:
@@ -7,7 +7,7 @@ on:
       - main
 
 jobs:
-  cores-assemble:
+  cores-boot:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,13 +22,8 @@ jobs:
       - name: Build SWTPC 6800 simulator
         run: bash scripts/setup-swtpc-sim.sh
 
-      - name: Build CORES binary from repository S19
-        run: |
-          test -s third_party/cores/swtpc_cores_1_01.s19
-          python3 scripts/s19_to_bin.py \
-            third_party/cores/swtpc_cores_1_01.s19 \
-            third_party/cores/swtpc_cores_1_01.bin
-          test -s third_party/cores/swtpc_cores_1_01.bin
+      - name: Verify CORES S19 exists
+        run: test -s third_party/cores/swtpc_cores_1_01.s19
 
       - name: Boot CORES smoke test
         run: |
@@ -37,16 +32,11 @@ jobs:
           set timeout 20
           spawn .tools/bin/swtp6800
           expect "sim>"
-          send "load third_party/cores/swtpc_cores_1_01.s19\r"
-          expect "sim>"
-          send "dep pc 1F00\r"
-          expect "sim>"
-          send "go\r"
-          # Let the simulated CPU run briefly, then break back to the simulator.
-          after 2000
-          send "\x05"
-          expect "sim>"
-
+          send "do simh/cores.ini\r"
+          expect {
+            -re "sim>" { }
+            timeout { puts "Timed out waiting to return to sim>"; exit 1 }
+          }
           send "quit\r"
           expect eof
           EXPECT

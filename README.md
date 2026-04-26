@@ -56,5 +56,13 @@ A second CI workflow (`.github/workflows/cores-assemble-test.yml`) now:
 
 1. builds the SIMH SWTPC 6800 simulator,
 2. uses the checked-in SWTPC CORES S19 (`third_party/cores/swtpc_cores_1_01.s19`),
-3. converts it into a contiguous binary image (`third_party/cores/swtpc_cores_1_01.bin`), and
-4. boots CORES in the simulator as a smoke test and verifies the emulator can run and return to the SIMH prompt.
+3. runs `simh/cores.ini` to load CORES and set `PC` for execution, and
+4. verifies the simulator returns to `sim>` after running the script in CI.
+
+### Manual CORES load in Codespaces
+
+```bash
+swtp6800 simh/cores.ini
+# at sim>
+go
+```
